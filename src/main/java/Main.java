@@ -19,7 +19,7 @@ public class Main {
     testTree.insertNode(n7);
     testTree.insertNode(n8);
     testTree.insertNode(n9);
+    System.out.println(testTree);
     System.out.println(testTree.nearestNeighbors(4, 1));
-
   }
 }
