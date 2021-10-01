@@ -11,7 +11,7 @@ public class KDTree {
   private int size;
   private int depth;
   private int dimensions;
-  private PriorityQueue<Node> nodes;
+  private ArrayList<Node> nodes;
 
 ///////////////////////////////////////////////////////////////////////////////////
   public class Node implements Comparable<Node> {
@@ -131,21 +131,21 @@ public class KDTree {
     return source;
   }
 
-  public Node[] nearestNeighbors(int k, int weight, int height, int age){
+  public ArrayList<Node> nearestNeighbors(int k, int weight, int height, int age){
     Node input = new Node( weight, height, age);
     input.setDistance(Double.MAX_VALUE);
-    this.nodes = new PriorityQueue<Node>(k);
+    this.nodes = new ArrayList<>(k);
     nodeSearch(k, this.root, input);
-    return this.nodes.toArray(new Node[k]);
+    return this.nodes;
   }
-  public Node[] nearestNeighbors(int k, int id){
-    this.nodes = new PriorityQueue<Node>(k);
+  public ArrayList<Node> nearestNeighbors(int k, int id){
+    this.nodes = new ArrayList<>(k);
     Node input = findNodeByID(id);
     if (input == null){
       throw new NullPointerException("The requested node could not be found");
     }
     nodeSearch(k, this.root, input);
-    return this.nodes.toArray(new Node[k]);
+    return this.nodes;
   }
   public Node findNodeByID(int id) {
     LinkedList<Node> queue = new LinkedList<>();
@@ -167,19 +167,17 @@ public class KDTree {
         + Math.pow(source.getPoint()[1] - target.getPoint()[1], 2)
         + Math.pow(source.getPoint()[2] - target.getPoint()[2], 2));
     source.setDistance(distance);
-    boolean temp = false;
-//    if (this.nodes.size() < k && target.getId() != source.getId()) this.nodes.add(source);
-//    else for (Node n : nodes) {
-//      if (source.compareTo(n) <= 0 && target.getId() != source.getId()){
-//        temp = true;
-//      }
-//    }
-//    if (temp) nodes.add(source);
-    if (target.getId() != source.getId()) this.nodes.add(source);
+    if (this.nodes.size() < k && target.getId() != source.getId()) this.nodes.add(source);
     else {
-      nodeSearch(k, source.left, target);
+      for (int i = 0; i < nodes.size(); i++) {
+        if (source.compareTo(nodes.get(i)) <= 0 && target.getId() != source.getId()) {
+          nodes.add(i, source);
+          nodes.remove(nodes.size()-1);
+          break;
+        }
+      }
     }
-    if (nodes.toArray(new Node[k])[nodes.size()-1].getDistance() >
+    if (nodes.size()  != 0 && nodes.toArray(new Node[k])[nodes.size()-1].getDistance() >
         target.getPoint()[target.getDepth()]){
       nodeSearch(k, source.left, target);
       nodeSearch(k, source.right, target);
@@ -189,7 +187,7 @@ public class KDTree {
         nodeSearch(k, source.right, target);
       }
       else nodeSearch(k, source.left, target);
-    }
+      }
     }
 
 

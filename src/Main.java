@@ -19,11 +19,7 @@ public class Main {
     testTree.insertNode(n7);
     testTree.insertNode(n8);
     testTree.insertNode(n9);
-    System.out.println(testTree);
-    System.out.println(testTree.getSize());
-    KDTree.Node[] ns = testTree.nearestNeighbors(1, 0, 0,0);
-    for (int i = 0; i < ns.length; i++){
-      System.out.println(ns[i]);
-    }
+    System.out.println(testTree.nearestNeighbors(4, 1));
+
   }
 }
