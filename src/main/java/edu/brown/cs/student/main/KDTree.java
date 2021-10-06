@@ -1,3 +1,5 @@
+package edu.brown.cs.student.main;
+
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.Objects;

@@ -1,3 +1,31 @@
+/*
+public class Main {
+  public static void main(String[] args){
+    edu.brown.cs.student.main.KDTree testTree = new edu.brown.cs.student.main.KDTree();
+    edu.brown.cs.student.main.KDTree.Node n = testTree.new Node(1, 1, 1, 1, "Leo");
+    testTree.insertNode(n);
+    edu.brown.cs.student.main.KDTree.Node n2 = testTree.new Node(2, 2, 2, 2, "Leo");
+    edu.brown.cs.student.main.KDTree.Node n3 = testTree.new Node(3, 3, 3, 3, "Leo");
+    edu.brown.cs.student.main.KDTree.Node n4 = testTree.new Node(4, 15, 5, 23, "Leo");
+    edu.brown.cs.student.main.KDTree.Node n5 = testTree.new Node(5, 15, 8, 23, "Leo");
+    edu.brown.cs.student.main.KDTree.Node n6 = testTree.new Node(6, 15, 11, 23, "Leo");
+    edu.brown.cs.student.main.KDTree.Node n7 = testTree.new Node(7, 15, 13, 23, "Leo");
+    edu.brown.cs.student.main.KDTree.Node n8 = testTree.new Node(8, 15, 11, 21, "Leo");
+    edu.brown.cs.student.main.KDTree.Node n9 = testTree.new Node(9, 15, 5, 25, "Leo");
+    testTree.insertNode(n2);
+    testTree.insertNode(n3);
+    testTree.insertNode(n4);
+    testTree.insertNode(n5);
+    testTree.insertNode(n6);
+    testTree.insertNode(n7);
+    testTree.insertNode(n8);
+    testTree.insertNode(n9);
+    System.out.println(testTree);
+    System.out.println(testTree.nearestNeighbors(4, 1));
+  }
+}
+*/
+
 package edu.brown.cs.student.main;
 
 import java.io.BufferedReader;
@@ -68,6 +96,8 @@ public final class Main {
     }
 
     Database db = null;
+    Rent rent = new Rent("good", "meh", "3", "4", "5", "6", "7", "1234");
+
     try (BufferedReader br = new BufferedReader(new InputStreamReader(System.in))) {
       String input;
       while ((input = br.readLine()) != null) {
@@ -81,19 +111,21 @@ public final class Main {
               db = new Database(arguments[1]);
               break;
             case "insert":
-              Rent rent = new Rent("good", "meh", "3", "4", "5", "6", "7", "8");
               db.insert(rent);
               break;
+            case "delete":
+              //edu.brown.cs.student.Rent rent = new edu.brown.cs.student.Rent("1", "2", "3", "4", "5", "6", "7", "8");
+              db.delete(rent);
+              break;
             case "select":
-              //Rent rent = new Rent("1", "2", "3", "4", "5", "6", "7", "8");
-              db.where("fit=?", "good");
+              //edu.brown.cs.student.Rent rent = new edu.brown.cs.student.Rent("1", "2", "3", "4", "5", "6", "7", "8");
+              db.where("item_id", "2");
               break;
             case "update":
-              Rent rent2 = new Rent("good", "2", "3", "4", "5", "6", "7", "8");
-              db.update(rent2, "good", "bad");
+              db.update(rent, "fit", "excellent!");
               break;
-            case "raw query":
-              String query = "SELECT COUNT(*) as count from rent";
+            case "query":
+              String query = "UPDATE rent set size='7' where fit='bad'";
               db.sql(query);
               break;
             default:
@@ -181,4 +213,5 @@ public final class Main {
     }
   }
 }
+
 
