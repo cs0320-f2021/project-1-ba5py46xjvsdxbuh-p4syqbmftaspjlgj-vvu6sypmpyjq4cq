@@ -54,17 +54,27 @@ public class Database {
    * @throws IllegalAccessException if the field of an object is called that doesn't exist.
    */
   public void insert(Object newData) throws SQLException, IllegalAccessException {
-    Class clas = newData.getClass();
-    Field[] fields = clas.getDeclaredFields();
-    PreparedStatement prep = conn.prepareStatement("INSERT INTO " +
-        "rent VALUES (?,?,?,?,?,?,?,?);");
-    for (int i = 0; i < fields.length; i++) {
-      prep.setString(i + 1, (String) fields[i].get(newData));
+    try {
+      if (!rentList.contains(newData)) {
+        Class clas = newData.getClass();
+        Field[] fields = clas.getDeclaredFields();
+        PreparedStatement prep = conn.prepareStatement("INSERT INTO " +
+            "rent VALUES (?,?,?,?,?,?,?,?);");
+        for (int i = 0; i < fields.length; i++) {
+          prep.setString(i + 1, (String) fields[i].get(newData));
+        }
+        prep.addBatch();
+        prep.executeBatch();
+        prep.close();
+        rentList.add((Rent) newData);
+      } else {
+        System.out.println("Item is already in database!");
+      }
+    } catch (SQLException e) {
+      System.out.println("Item is already in database!");
+    } catch (IllegalAccessException e) {
+      System.out.println("Incorrect fields used.");
     }
-    prep.addBatch();
-    prep.executeBatch();
-    prep.close();
-    rentList.add((Rent) newData);
   }
 
   /**
@@ -117,13 +127,13 @@ public class Database {
 
   //prints a header with fields of rent
   public static void printRentHeader() {
-    System.out.println(String.format("%5s %5s %5s %5s %5s %5s %5s %5s %5s %5s %5s %5s %5s %5s %5s", "fit", "|", "user_id", "|", "item_id", "|", "rating", "|", "rented_for", "|", "category", "|", "size", "|", "id"));
-    System.out.println(String.format("%s", "----------------------------------------------------------------------------------------------------------"));
+    System.out.println(String.format("%10s %10s %10s %10s %10s %10s %10s %10s %10s %10s %10s %10s %10s %10s %10s %10s", "fit", "|", "user_id", "|", "item_id", "|", "rating", "|", "rented_for", "|", "category", "|", "size", "|", "id" , "|"));
+    System.out.println(String.format("%s", "-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------"));
   }
 
   //prints a rent object with its field values
   public void printRent(Rent r) {
-    System.out.println(String.format("%5s %5s %5s %5s %5s %5s %5s %5s %5s %5s %5s %5s %5s %5s %5s", r.fit, "|", r.user_id, "|", r.item_id, "|", r.rating, "|", r.rented_for, "|", r.category, "|", r.size, "|", r.id));
+    System.out.println(String.format("%10s %10s %10s %10s %10s %10s %10s %10s %10s %10s %10s %10s %10s %10s %10s %10s", r.fit, "|", r.user_id, "|", r.item_id, "|", r.rating, "|", r.rented_for, "|", r.category, "|", r.size, "|", r.id, "|"));
   }
 
   //helper function to make a new rent object. this can be modified to make any type of class object
