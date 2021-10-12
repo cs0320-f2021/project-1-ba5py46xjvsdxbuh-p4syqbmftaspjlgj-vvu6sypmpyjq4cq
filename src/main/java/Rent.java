@@ -1,5 +1,3 @@
-package edu.brown.cs.student.main;
-
 public class Rent {
   String fit;
   String user_id;

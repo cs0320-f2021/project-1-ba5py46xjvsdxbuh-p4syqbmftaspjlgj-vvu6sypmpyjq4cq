@@ -1,8 +1,6 @@
-package edu.brown.cs.student.main;
-
 import java.util.ArrayList;
 import java.util.LinkedList;
-import java.util.Objects;
+
 
 
 public class KDTree {
@@ -12,93 +10,6 @@ public class KDTree {
   private final int dimensions;
   private ArrayList<Node> nodes;
 
-  ///////////////////////////////////////////////////////////////////////////////////
-  public class Node implements Comparable<Node> {
-    private int id;
-    private final int[] point;
-    private String sign;
-    private Node left;
-    private Node right;
-    private int depth;
-    private double distance;
-
-    //Constructor used for loaded data
-    public Node(int id, int x, int y, int z, String sign) {
-      this.id = id;
-      int[] p = {x, y, z};
-      this.point = p;
-      this.sign = sign;
-    }
-
-    //Constructor for nodes based on target data
-    public Node(int x, int y, int z) {
-      int[] p = {x, y, z};
-      this.point = p;
-    }
-
-    //Setters and getters for Node instance variables
-    public int getDepth() {
-      return depth;
-    }
-
-    public void setDepth(int d) {
-      this.depth = d % dimensions;
-    }
-
-    private int[] getPoint() {
-      return this.point;
-    }
-
-    public double getDistance() {
-      return distance;
-    }
-
-    public void setDistance(double distance) {
-      this.distance = distance;
-    }
-
-    public int getId() {
-      return id;
-    }
-
-    //Equality based on node ID.
-    @Override
-    public boolean equals(Object o) {
-      if (this == o) {
-        return true;
-      }
-      if (o == null || getClass() != o.getClass()) {
-        return false;
-      }
-      Node node = (Node) o;
-      return id == node.id;
-    }
-
-    @Override
-    public int hashCode() {
-      return Objects.hash(id);
-    }
-
-    //Converts the node to the ID. More could be added to this based on changes in what is needed
-    @Override
-    public String toString() {
-      return "ID: " + id;
-    }
-
-    //Comparison is based purely on distance. This is used in the nearest neighbors search.
-    @Override
-    public int compareTo(Node o) {
-      if (this.getDistance() < o.getDistance()) {
-        return -1;
-      } else if (this.getDistance() > o.getDistance()) {
-        return 1;
-      }
-      return 0;
-    }
-  }
-
-  ////////////////////////////////////////////////////////////////////////////////////////
-  //End of nested Node Class
   //Default constructor uses 3 dimensions as this is what we expect to use in this project.
   public KDTree() {
     this.root = null;
@@ -122,14 +33,14 @@ public class KDTree {
       size++;
       this.updateDepth();
       //assign the node's depth
-      n.setDepth(this.depth);
+      n.setDepth(this.depth, this.dimensions);
       this.root = insert(this.root, n);
     } else {
       this.root = insert(this.root, n);
       size++;
       this.updateDepth();
       //assign the node's depth
-      n.setDepth(this.depth);
+      n.setDepth(this.depth, this.dimensions);
     }
   }
 
@@ -147,21 +58,22 @@ public class KDTree {
     if (source == null) {
       return insert;
       //Go left if inserted point is smaller on relevant axis
-    } else if (insert.getPoint()[dim] < source.getPoint()[dim]) {
-      source.left = insert(source.left, insert);
+    } else if (insert.getPoint()[dim] < (source.getPoint()[dim])) {
+      source.setLeft(insert(source.getLeft(), insert));
       //Go right if inserted point is larger on relevant axis
-    } else if (insert.getPoint()[dim] > source.getPoint()[dim]) {
-      source.right = insert(source.right, insert);
+    } else if (insert.getPoint()[dim] > (source.getPoint()[dim])) {
+      source.setRight(insert(source.getRight(), insert));
     } else {
       //If same node, throw error
       if (source.equals(insert)) {
         throw new IllegalArgumentException("Node already exists in the tree");
       }
       //default to right side if equal
-      source.right = insert(source.right, insert);
+      source.setRight(insert(source.getRight(), insert));
     }
     return source;
   }
+
   /*
   Runs the node search algorithm on the input arguments. It creates a false node to search for the
   nearest neighbors.
@@ -173,6 +85,7 @@ public class KDTree {
     nodeSearch(k, this.root, input);
     return this.nodes;
   }
+
   /*
   Runs the node search algorithm on the input arguments. First, it finds the node with the given
   id, then passes this into node search.
@@ -186,6 +99,7 @@ public class KDTree {
     nodeSearch(k, this.root, input);
     return this.nodes;
   }
+
   //Uses BFS to search for the node with the given input ID.
   public Node findNodeByID(int id) {
     LinkedList<Node> queue = new LinkedList<>();
@@ -195,15 +109,16 @@ public class KDTree {
       if (n.getId() == id) {
         return n;
       }
-      if (n.left != null) {
-        queue.add(n.left);
+      if (n.getLeft() != null) {
+        queue.add(n.getLeft());
       }
-      if (n.right != null) {
-        queue.add(n.right);
+      if (n.getRight() != null) {
+        queue.add(n.getRight());
       }
     }
     return null;
   }
+
   /*
   Recursively searches through the tree to find and store the k nearest neighbors to the target.
    */
@@ -237,14 +152,14 @@ public class KDTree {
       }
     }
     if (nodes.size() != 0 && nodes.get(nodes.size() - 1).getDistance()
-        > target.getPoint()[target.getDepth()]) {
-      nodeSearch(k, source.left, target);
-      nodeSearch(k, source.right, target);
+        >= target.getPoint()[source.getDepth()] - source.getPoint()[source.getDepth()]) {
+      nodeSearch(k, source.getLeft(), target);
+      nodeSearch(k, source.getRight(), target);
     } else {
-      if (source.getPoint()[target.getDepth()] <= target.getPoint()[target.getDepth()]) {
-        nodeSearch(k, source.right, target);
-      } else {
-        nodeSearch(k, source.left, target);
+      if (source.getPoint()[source.getDepth()] < target.getPoint()[source.getDepth()]) {
+        nodeSearch(k, source.getRight(), target);
+      } else if (source.getPoint()[target.getDepth()] > target.getPoint()[target.getDepth()]) {
+        nodeSearch(k, source.getLeft(), target);
       }
     }
   }
@@ -270,11 +185,11 @@ public class KDTree {
         output += ", ";
       }
       output += n.toString();
-      if (n.left != null) {
-        queue.add(n.left);
+      if (n.getLeft() != null) {
+        queue.add(n.getLeft());
       }
-      if (n.right != null) {
-        queue.add(n.right);
+      if (n.getRight() != null) {
+        queue.add(n.getRight());
       }
     }
     return output;

@@ -1,6 +1,3 @@
-import edu.brown.cs.student.main.Database;
-import edu.brown.cs.student.main.Rent;
-import org.junit.Assert;
 import org.junit.Test;
 
 import java.sql.SQLException;
