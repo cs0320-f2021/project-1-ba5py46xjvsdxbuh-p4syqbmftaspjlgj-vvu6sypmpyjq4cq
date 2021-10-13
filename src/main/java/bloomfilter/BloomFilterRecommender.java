@@ -1,7 +1,7 @@
 package bloomfilter;
 
-import edu.brown.cs.student.recommender.Item;
-import edu.brown.cs.student.recommender.Recommender;
+import recommender.Item;
+import recommender.Recommender;
 
 import java.util.Comparator;
 import java.util.HashMap;
