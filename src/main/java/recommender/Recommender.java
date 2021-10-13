@@ -1,4 +1,4 @@
-package edu.brown.cs.student.recommender;
+package recommender;
 
 import java.util.List;
 

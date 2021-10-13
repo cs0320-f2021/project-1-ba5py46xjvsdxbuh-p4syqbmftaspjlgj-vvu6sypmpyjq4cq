@@ -1,4 +1,4 @@
-package edu.brown.cs.student.bloomfilter;
+package bloomfilter;
 
 import java.io.Serializable;
 import java.util.BitSet;

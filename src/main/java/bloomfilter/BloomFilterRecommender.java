@@ -1,4 +1,4 @@
-package edu.brown.cs.student.bloomfilter;
+package bloomfilter;
 
 import edu.brown.cs.student.recommender.Item;
 import edu.brown.cs.student.recommender.Recommender;
