@@ -91,7 +91,10 @@ public final class Main {
         }
         // get the command the user inputted and run it
         try {
+          // saves the first argument (which is the command to run) as a REPLCallable
           REPLCallable command = REPLCommands.get(arguments[0]);
+          // calls run() on the command, which is the function that all REPLCallable objects
+          // are guaranteed to have and that implements the functionality of the command
           command.run(arguments, REPLCommands);
         } catch (ClassCastException e) {
           System.out.println("ERROR: invalid command type");
