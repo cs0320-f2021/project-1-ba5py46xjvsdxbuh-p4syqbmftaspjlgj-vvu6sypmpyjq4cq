@@ -1,41 +1,14 @@
-/*
-public class Main {
-  public static void main(String[] args){
-    KDTree testTree = new KDTree();
-    KDTree.Node n = testTree.new Node(1, 1, 1, 1, "Leo");
-    testTree.insertNode(n);
-    KDTree.Node n2 = testTree.new Node(2, 2, 2, 2, "Leo");
-    KDTree.Node n3 = testTree.new Node(3, 3, 3, 3, "Leo");
-    KDTree.Node n4 = testTree.new Node(4, 15, 5, 23, "Leo");
-    KDTree.Node n5 = testTree.new Node(5, 15, 8, 23, "Leo");
-    KDTree.Node n6 = testTree.new Node(6, 15, 11, 23, "Leo");
-    KDTree.Node n7 = testTree.new Node(7, 15, 13, 23, "Leo");
-    KDTree.Node n8 = testTree.new Node(8, 15, 11, 21, "Leo");
-    KDTree.Node n9 = testTree.new Node(9, 15, 5, 25, "Leo");
-    testTree.insertNode(n2);
-    testTree.insertNode(n3);
-    testTree.insertNode(n4);
-    testTree.insertNode(n5);
-    testTree.insertNode(n6);
-    testTree.insertNode(n7);
-    testTree.insertNode(n8);
-    testTree.insertNode(n9);
-    System.out.println(testTree);
-    System.out.println(testTree.nearestNeighbors(4, 1));
-  }
-}
-*/
-
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.util.HashMap;
 import java.util.Map;
+import java.util.regex.PatternSyntaxException;
 
 import com.google.common.collect.ImmutableMap;
-
 import freemarker.template.Configuration;
 import joptsimple.OptionParser;
 import joptsimple.OptionSet;
@@ -46,12 +19,7 @@ import spark.Response;
 import spark.Spark;
 import spark.TemplateViewRoute;
 import spark.template.freemarker.FreeMarkerEngine;
-
-/**
- * The Main class of our project. This is where execution begins.
- */
-
-
+import command_code.*;
 
 
 /**
@@ -61,6 +29,8 @@ public final class Main {
 
   // use port 4567 by default when running server
   private static final int DEFAULT_PORT = 4567;
+
+  private HashMap<String, REPLCallable> REPLCommands = new HashMap<>();
 
   /**
    * The initial method called when execution begins.
@@ -88,56 +58,52 @@ public final class Main {
     parser.accepts("port").withRequiredArg().ofType(Integer.class)
         .defaultsTo(DEFAULT_PORT);
 
+    // turn on the Spark server if "gui" command given
     OptionSet options = parser.parse(args);
     if (options.has("gui")) {
       runSparkServer((int) options.valueOf("port"));
     }
 
-    Database db = null;
-    Rent rent = new Rent("good", "meh", "3", "4", "5", "6", "7", "1234");
+    // add default commands to our REPL hashmap,
+    // if an engineer adds wants to add new functionality to the REPL they should add a Java
+    // class that implements REPLCallable for it in the command_code package and then insert
+    // the command into the REPLCommands HashMap as the other commands are below
+    REPLCommands.put("help", new command_code.Help());
+    REPLCommands.put("remove_command", new command_code.RemoveCommand());
+    REPLCommands.put("recsys_gen_groups", new command_code.RecsysGenGroups());
+    REPLCommands.put("recsys_load", new command_code.RecsysLoad());
+    REPLCommands.put("recsys_rec", new command_code.RecsysRec());
 
     try (BufferedReader br = new BufferedReader(new InputStreamReader(System.in))) {
       String input;
+      System.out.println("REPL started successfully!");
+      System.out.println("Enter commands below or \"help\" at any time to see available commands");
       while ((input = br.readLine()) != null) {
+        String[] arguments = null;
         try {
           input = input.trim();
-          //This regex splits at spaces except when surrounded by quotes. I learned how to do this
+          // This regex splits at spaces except when surrounded by quotes. I learned how to do this
           // from this link https://stackabuse.com/regex-splitting-by-character-unless-in-quotes/
-          String[] arguments = input.split(" (?=([^\"]*\"[^\"]*\")*[^\"]*$)");
-          switch (arguments[0]) {
-            case "database":
-              db = new Database(arguments[1]);
-              break;
-            case "insert":
-              db.insert(rent);
-              break;
-            case "delete":
-              //edu.brown.cs.student.Rent rent = new edu.brown.cs.student.Rent("1", "2", "3", "4", "5", "6", "7", "8");
-              db.delete(rent);
-              break;
-            case "select":
-              //edu.brown.cs.student.Rent rent = new edu.brown.cs.student.Rent("1", "2", "3", "4", "5", "6", "7", "8");
-              db.where("item_id", "2");
-              break;
-            case "update":
-              db.update(rent, "fit", "excellent!");
-              break;
-            case "query":
-              String query = "UPDATE rent set size='7' where fit='bad'";
-              db.sql(query);
-              break;
-            default:
-              System.out.println("ERROR: command not found");
-              break;
-          }
-        } catch (Exception e) {
-          e.printStackTrace();
-          //System.out.println("ERROR: We couldn't process your input");
+          arguments = input.split(" (?=([^\"]*\"[^\"]*\")*[^\"]*$)");
+        } catch (PatternSyntaxException e) {
+          System.out.println("ERROR: we couldn't process your input");
+          //e.printStackTrace();
+        }
+        // get the command the user inputted and run it
+        try {
+          REPLCallable command = REPLCommands.get(arguments[0]);
+          command.run(arguments, REPLCommands);
+        } catch (ClassCastException e) {
+          System.out.println("ERROR: invalid command type");
+          //e.printStackTrace();
+        } catch (NullPointerException e) {
+          System.out.println("ERROR: invalid or null command");
+          //e.printStackTrace();
         }
       }
-    } catch (Exception e) {
-      e.printStackTrace();
-      System.out.println("ERROR: Invalid input for REPL");
+    } catch (IOException e) {
+      System.out.println("ERROR: something went wrong with REPL I/O (see: uses of .readLine())");
+      //e.printStackTrace();
     }
 
   }
