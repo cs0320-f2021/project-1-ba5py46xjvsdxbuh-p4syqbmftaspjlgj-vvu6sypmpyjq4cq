@@ -1,0 +1,18 @@
+ARGS
+
+INPUT
+remove_command null
+remove_command
+remove_command 2 3
+remove_command help recsys_load
+OUTPUT
+REPL started successfully!
+Enter commands below or "help" at any time to see available commands
+ERROR: the command you're trying to remove doesn't exist
+ERROR: invalid syntax for "remove_command" command
+Proper command format: "remove_command <command_to_be_removed>"
+ERROR: invalid syntax for "remove_command" command
+Proper command format: "remove_command <command_to_be_removed>"
+ERROR: invalid syntax for "remove_command" command
+Proper command format: "remove_command <command_to_be_removed>"
+END

@@ -1,0 +1,11 @@
+ARGS
+
+INPUT
+remove
+asdfasdf
+OUTPUT
+REPL started successfully!
+Enter commands below or "help" at any time to see available commands
+ERROR: invalid or null command
+ERROR: invalid or null command
+END

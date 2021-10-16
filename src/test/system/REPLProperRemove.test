@@ -1,0 +1,19 @@
+ARGS
+
+INPUT
+remove_command recsys_load
+help
+remove_command help
+help
+OUTPUT
+REPL started successfully!
+Enter commands below or "help" at any time to see available commands
+Command removed successfully!
+Available Commands:
+	help
+	remove_command
+	recsys_gen_groups
+	recsys_rec
+Command removed successfully!
+ERROR: invalid or null command
+END
