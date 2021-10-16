@@ -1,7 +1,7 @@
 import org.junit.Assert;
 import org.junit.Test;
 
-public class KDTreeTester {
+public class KDTreeTest {
 
   @Test
   public void testInsertOne(){

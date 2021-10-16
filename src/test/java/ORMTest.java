@@ -1,8 +1,7 @@
 import org.junit.Test;
-
 import java.sql.SQLException;
 
-public class ORMTester {
+public class ORMTest {
 
   @Test
   public void testInsertOne() throws SQLException, ClassNotFoundException, IllegalAccessException {
