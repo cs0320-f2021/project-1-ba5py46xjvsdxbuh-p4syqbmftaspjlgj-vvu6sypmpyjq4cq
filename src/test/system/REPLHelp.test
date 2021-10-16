@@ -1,0 +1,14 @@
+ARGS
+
+INPUT
+help
+OUTPUT
+REPL started successfully!
+Enter commands below or "help" at any time to see available commands
+Available Commands:
+	help
+	remove_command
+	recsys_load
+	recsys_gen_groups
+	recsys_rec
+END

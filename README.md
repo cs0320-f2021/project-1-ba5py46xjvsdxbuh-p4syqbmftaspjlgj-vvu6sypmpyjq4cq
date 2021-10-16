@@ -7,7 +7,7 @@ To run use:
 
 ------
 
-###TESTING NOTES
+### TESTING NOTES
 
 To run JUNIT tests use `mvn package` or `mvn test`; to run
 the JUNIT tests and create the summary page use 
