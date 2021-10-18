@@ -18,7 +18,7 @@ public class Database {
 
 
   private static Connection conn = null;
-  private static List<Rent> rentList = new ArrayList<>();
+  private static List<Student> studentList = new ArrayList<>();
 
   /**
    * Instantiates the database, creating tables if necessary.
