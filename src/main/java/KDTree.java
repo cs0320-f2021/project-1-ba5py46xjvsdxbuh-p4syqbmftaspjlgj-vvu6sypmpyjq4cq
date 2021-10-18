@@ -2,7 +2,6 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 
 
-
 public class KDTree {
   private Node root;
   private int size;
@@ -21,6 +20,13 @@ public class KDTree {
     this.root = null;
     this.dimensions = n;
   }
+
+//  public void loadData(List<T> data) {
+//    for (int i = 0; i < data.size(); i++) {
+//      data.get();
+//      this.
+//    }
+//  }
 
   /* Insert node calls upon the insert method to put a new node into the tree. Additionally, the
   depth and size of the tree are updated. The order in which this happens changes based on whether
@@ -79,6 +85,12 @@ public class KDTree {
   nearest neighbors.
   */
   public ArrayList<Node> nearestNeighbors(int k, int weight, int height, int age) {
+    if (k == 0) {
+      throw new IllegalArgumentException("ERROR: You must search for at least one neighbor");
+    }
+    if (this.root == null) {
+      throw new NullPointerException("ERROR: No data is present in the tree");
+    }
     Node input = new Node(weight, height, age);
     input.setDistance(Double.MAX_VALUE);
     this.nodes = new ArrayList<>(k);
@@ -91,6 +103,12 @@ public class KDTree {
   id, then passes this into node search.
    */
   public ArrayList<Node> nearestNeighbors(int k, int id) {
+    if (k == 0) {
+      throw new IllegalArgumentException("ERROR: You must search for at least one neighbor");
+    }
+    if (this.root == null) {
+      throw new NullPointerException("ERROR: No data is present in the tree");
+    }
     this.nodes = new ArrayList<>(k);
     Node input = findNodeByID(id);
     if (input == null) {
@@ -126,9 +144,7 @@ public class KDTree {
     if (source == null) {
       return;
     }
-    double distance = Math.sqrt(Math.pow(source.getPoint()[0] - target.getPoint()[0], 2)
-        + Math.pow(source.getPoint()[1] - target.getPoint()[1], 2)
-        + Math.pow(source.getPoint()[2] - target.getPoint()[2], 2));
+    double distance = source.distanceTo(target);
     source.setDistance(distance);
     if (this.nodes.size() < k && target.getId() != source.getId()) {
       this.nodes.add(source);

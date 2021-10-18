@@ -115,7 +115,7 @@ public class Database {
     }
     rs.close();
     prep.close();
-    printRentHeader();
+    //printRentHeader();
     for (int i = 0; i < selectList.size();  i++) {
       printRent(selectList.get(i));
     }

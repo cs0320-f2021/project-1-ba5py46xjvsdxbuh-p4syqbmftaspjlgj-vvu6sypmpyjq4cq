@@ -69,6 +69,18 @@ public class Node implements Comparable<Node> {
     this.right = right;
   }
 
+  public double distanceTo(Node n){
+    double sum = 0;
+    if (n.getPoint().length != this.getPoint().length){
+      throw new IllegalArgumentException();
+    }
+    for (int i  = 0; i < this.point.length; i++){
+      sum += Math.pow(this.point[i] - n.getPoint()[i], 2);
+    }
+    sum = Math.sqrt(sum);
+    return sum;
+  }
+
   //Equality based on node ID.
   @Override
   public boolean equals(Object o) {
