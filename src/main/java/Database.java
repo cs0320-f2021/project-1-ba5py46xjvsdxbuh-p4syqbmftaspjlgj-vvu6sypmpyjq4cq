@@ -104,13 +104,14 @@ public class Database {
    * @throws SQLException if an error occurs in any SQL query.
    */
 
-  public void where(String pred, String predEquals) throws SQLException {
-    List<Rent> selectList = new ArrayList<>();
-    PreparedStatement prep = conn.prepareStatement("SELECT * FROM rent where " + pred + "=" + predEquals);
+  public void where(String table, String pred, String predEquals) throws SQLException {
+    List<Student> selectList = new ArrayList<>();
+    PreparedStatement prep = conn.prepareStatement("SELECT * FROM " + table);
     //"SELECT * FROM rent WHERE" + pred + ";");
     //prep.setString(1, predEquals);
     ResultSet rs = prep.executeQuery();
     while (rs.next()) {
+      if (rs.getInt(1)).
       selectList.add(makeNewRent(rs));
     }
     rs.close();

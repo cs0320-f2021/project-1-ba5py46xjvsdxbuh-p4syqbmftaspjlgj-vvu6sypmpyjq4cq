@@ -41,3 +41,24 @@ some other GUI.
 ### QUESTIONS:
 
 Score normalization 
+
+------
+
+### DESIGN CHOICES:
+
+Algorithm: How we grouped students for US4... inverse considerations..
+
+For user story 1 (and the rest of the UI of our project) we choose
+to have everything interface through a REPL that runs in the command
+line. The main reasons driving this decision included us being most
+comfortable programming a UI in this way and that doing so allowed us to 
+perform system tests on specific input/output of all our functionality 
+more easily (namely, in the manner that was introduced in the Onboarding
+Lab) than would have been possible with file serialization, a website, or
+some other GUI.
+
+------
+
+### QUESTIONS:
+
+Score normalization 

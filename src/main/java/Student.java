@@ -13,6 +13,14 @@ public class Student {
     this.skills = skills;
   }
 
+  public Student(int id){
+    this.id = id;
+    this.interests = null;
+    this.positives = null;
+    this.negatives = null;
+    this.skills = null;
+  }
+
   public int getId() {
     return id;
   }
