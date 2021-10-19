@@ -31,6 +31,7 @@ public final class Main {
   private static final int DEFAULT_PORT = 4567;
 
   private HashMap<String, REPLCallable> REPLCommands = new HashMap<>();
+  private ArrayList<Student> data;
 
   /**
    * The initial method called when execution begins.
@@ -95,7 +96,7 @@ public final class Main {
           REPLCallable command = REPLCommands.get(arguments[0]);
           // calls run() on the command, which is the function that all REPLCallable objects
           // are guaranteed to have and that implements the functionality of the command
-          command.run(arguments, REPLCommands);
+          command.run(arguments, REPLCommands, data);
         } catch (ClassCastException e) {
           System.out.println("ERROR: invalid command type");
           //e.printStackTrace();

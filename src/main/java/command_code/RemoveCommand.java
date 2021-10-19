@@ -4,7 +4,7 @@ import java.util.HashMap;
 
 public class RemoveCommand implements REPLCallable {
 
-    public void run(String[] REPLArguments, HashMap<String, REPLCallable> REPLCommands) {
+    public void run(String[] REPLArguments, HashMap<String, REPLCallable> REPLCommands, List<Student> data) {
         if (REPLArguments.length != 2) {
             // run if command syntax is wrong (too many/few arguments were passed in)
             System.out.println("ERROR: invalid syntax for \"remove_command\" command");
