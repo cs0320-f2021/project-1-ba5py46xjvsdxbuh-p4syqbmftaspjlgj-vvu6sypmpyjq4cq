@@ -1,4 +1,5 @@
 import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -6,7 +7,11 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 
 /**
@@ -18,7 +23,7 @@ public class Database {
 
 
   private static Connection conn = null;
-  private static List<Student> studentList = new ArrayList<>();
+  private static List<Object> objectList = new ArrayList<>();
 
   /**
    * Instantiates the database, creating tables if necessary.
@@ -51,7 +56,7 @@ public class Database {
    */
   public void insert(Object newData) throws SQLException, IllegalAccessException {
     try {
-      if (!rentList.contains(newData)) {
+      if (!objectList.contains(newData)) {
         Class clas = newData.getClass();
         Field[] fields = clas.getDeclaredFields();
         PreparedStatement prep = conn.prepareStatement("INSERT INTO " +
@@ -62,7 +67,7 @@ public class Database {
         prep.addBatch();
         prep.executeBatch();
         prep.close();
-        rentList.add((Rent) newData);
+        objectList.add((Rent) newData);
       } else {
         System.out.println("Item is already in database!");
       }
@@ -92,19 +97,72 @@ public class Database {
     prep.setString(1, deletedField);
     prep.execute();
     prep.close();
-    rentList.remove(data);
+    objectList.remove(data);
   }
 
-  /**
-   * selects the data in a table where a given predicate is true. Returns a table
-   * of the selected data
-   *
-   * @param pred predicate of sql select operation, i.e. the field we're looking at specifically.
-   * @param predEquals what the predicate should equal, i.e. the qualifier we're specifying.
-   * @throws SQLException if an error occurs in any SQL query.
-   */
+  public <T> List<T> select(Class<T> c, Map<String, String> queryParams) throws SQLException,
+      InstantiationException, IllegalAccessException, IllegalArgumentException,
+      InvocationTargetException, NoSuchMethodException, SecurityException {
+    String tableName = c.getSimpleName().toLowerCase();
+    if (queryParams.isEmpty()) {
+      String sql = "SELECT * FROM " + tableName + ";";
+      return sqlListQuery(c,sql, Collections.emptyList());
+    } else {
+      List<Object> params = new ArrayList<>();
+      Set<String> keys = queryParams.keySet();
+      String wheres = "";
+      int counter = 0;
+      for (String key : keys) {
+        counter += 1;
+        params.add(queryParams.get(key));
+        if (counter != keys.size()) {
+          wheres += (key + "=? AND");
+        } else {
+          wheres += (key + "=?");
+        }
+    }
+      String sql = "SELECT * FROM " + tableName + " WHERE " + wheres + ";";
+      System.out.println(sql);
+      return sqlListQuery(c, sql, params);
+    }
+  }
 
-  public void where(String table, String pred, String predEquals) throws SQLException {
+  private <T> List<T> sqlListQuery(Class<T> c, String sql, List<Object> insertValues) throws
+      SQLException, InstantiationException, IllegalAccessException, IllegalArgumentException,
+      InvocationTargetException, NoSuchMethodException, SecurityException {
+    PreparedStatement prep = conn.prepareStatement(sql);
+    if (!insertValues.isEmpty()) {
+      setParameters(prep, insertValues);
+    }
+    List<T> output = new ArrayList<>();
+    ResultSet res = prep.executeQuery();
+    Field[] attributes = c.getDeclaredFields();
+    Map<String, String> mapper = new HashMap<>();
+    while (res.next()) {
+      for (Field field : attributes) {
+        field.setAccessible(true);
+        String fieldName = field.getName();
+        int column = res.findColumn(fieldName);
+        mapper.put(fieldName, res.getString(column));
+      }
+      T node = (T) (c.getDeclaredConstructor(Map.class).newInstance(mapper));
+      output.add(node);
+    }
+    System.out.println(output.size());
+    return output;
+  }
+
+  private void setParameters(PreparedStatement prep, List<Object> parameters) throws SQLException {
+    int counter = 1;
+    for (Object o : parameters) {
+      prep.setObject(counter, o);
+      counter += 1;
+    }
+  }
+
+
+
+/*  public void where(String table, String pred, String predEquals) throws SQLException {
     List<Student> selectList = new ArrayList<>();
     PreparedStatement prep = conn.prepareStatement("SELECT * FROM " + table);
     //"SELECT * FROM rent WHERE" + pred + ";");
@@ -120,7 +178,7 @@ public class Database {
     for (int i = 0; i < selectList.size();  i++) {
       printRent(selectList.get(i));
     }
-  }
+  }*/
 
   //prints a header with fields of rent
   public static void printRentHeader() {
