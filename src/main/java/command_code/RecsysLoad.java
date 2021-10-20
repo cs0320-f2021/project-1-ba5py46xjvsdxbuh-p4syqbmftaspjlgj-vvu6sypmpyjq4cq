@@ -21,12 +21,13 @@ public class RecsysLoad implements REPLCallable {
     // body
     try {
       Database db = new Database("data/integration.sqlite3");
+      //Database db = new Database(REPLArguments[1]);
       List<Interests> interests = db.select(Interests.class, new HashMap<String, String>());
       //System.out.println("hello");
       List<Positive> positives = db.select(Positive.class, new HashMap<String, String>());
       List<Negative> negatives = db.select(Negative.class, new HashMap<String, String>());
-      skills = db.select(Skills.class, new HashMap<String, String>());
-      tree = new KDTree(skills.get(0).getSkills().length);
+      //skills = db.select(Skills.class, new HashMap<String, String>());
+      //tree = new KDTree(skills.get(0).getSkills().length);
       tree.loadData(skills);
       //System.out.println(interests);
       HashSet<Integer> idSet = new HashSet<Integer>();
@@ -37,16 +38,18 @@ public class RecsysLoad implements REPLCallable {
           Trait insert = new Trait(interests.get(i));
           traits.put(insert.getId(), insert);
         }
+        idSet.add(interests.get(i).getID());
       }
       for (int i = 0; i < positives.size(); i++) {
-        ((Trait) traits.get(positives.get(i).getID())).addToData(positives.get(i).getTrait());
+        //((Trait) traits.get(positives.get(i).getID())).addToData(positives.get(i).getTrait());
       }
       for (int i = 0; i < negatives.size(); i++) {
-        ((Trait) traits.get(negatives.get(i).getID())).addToData(negatives.get(i).getTrait());
+        //((Trait) traits.get(negatives.get(i).getID())).addToData(negatives.get(i).getTrait());
       }
-      filter = new BloomFilterRecommender<Item>(traits, 0.01);
+      //filter = new BloomFilterRecommender<Item>(traits, 0.01);
       BloomFilter<String> f = new BloomFilter<>(0.01, traits.size());
       filter.setBloomFilterComparator(new XnorSimilarityComparator(f));
+      System.out.println("Loaded Recommender with "+idSet.size()+" students");
     } catch (Exception e) {
       System.out.println("Error: this request could not be processed");
       System.out.println(e.toString());

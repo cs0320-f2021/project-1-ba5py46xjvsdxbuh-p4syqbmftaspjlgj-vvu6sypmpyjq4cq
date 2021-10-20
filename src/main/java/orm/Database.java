@@ -150,7 +150,7 @@ public class Database {
       T node = (T) (c.getDeclaredConstructor(Map.class).newInstance(mapper));
       output.add(node);
     }
-    System.out.println(output.size());
+    //System.out.println(output.size());
     return output;
   }
 
