@@ -1,3 +1,5 @@
+package orm;
+
 public class Rent {
     String fit;
     String user_id;

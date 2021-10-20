@@ -52,11 +52,11 @@ Aside from what was discussed above in regard to how we modified Students'
 quantitative skill scores for use with the k-d tree, we also modified the
 values in getting derivedSkills by converting our slightly scaled and 
 additive-inversed (mod 10) values into z-scores. This means that the biggest
-consideration in finding neighbors was how good a Student thought themselves at a
+consideration in finding neighbors was how good a orm.Student thought themselves at a
 particular skill relative to their abilities in the other skills instead of mere
 raw score. This was important to do because it eliminates bias that may occur
 from certain Students chronically over- or under-estimating their abilites
 across every skill.
 
 Talk about bloom filter and prohibitions on certain pairings...
-(maybe make array of people a Student can't work with)
+(maybe make array of people a orm.Student can't work with)

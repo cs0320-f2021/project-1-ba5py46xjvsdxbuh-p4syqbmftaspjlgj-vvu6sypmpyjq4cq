@@ -83,4 +83,8 @@ public class BloomFilterRecommender<T extends Item> implements Recommender<T> {
   public int getMaxNumValues() {
     return this.maxNumValues;
   }
+
+  public HashMap<String, BloomFilter<String>> getBloomFilters() {
+    return bloomFilters;
+  }
 }

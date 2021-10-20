@@ -4,14 +4,20 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.regex.PatternSyntaxException;
 
+import KDTree.KDTree;
+import bloomfilter.BloomFilter;
+import bloomfilter.BloomFilterRecommender;
 import com.google.common.collect.ImmutableMap;
 import freemarker.template.Configuration;
 import joptsimple.OptionParser;
 import joptsimple.OptionSet;
+import orm.Skills;
+import orm.Trait;
 import spark.ExceptionHandler;
 import spark.ModelAndView;
 import spark.Request;
@@ -20,6 +26,7 @@ import spark.Spark;
 import spark.TemplateViewRoute;
 import spark.template.freemarker.FreeMarkerEngine;
 import command_code.*;
+import recommender.*;
 
 
 /**
@@ -31,7 +38,10 @@ public final class Main {
   private static final int DEFAULT_PORT = 4567;
 
   private HashMap<String, REPLCallable> REPLCommands = new HashMap<>();
-  private ArrayList<Student> data;
+  private HashMap<String, Item> traits = new HashMap<>();
+  private ArrayList<Skills> skills = new ArrayList<>();
+  private KDTree tree = new KDTree();
+  private BloomFilterRecommender<Item> filter = new BloomFilterRecommender<>(new HashMap<>(), 0);
 
   /**
    * The initial method called when execution begins.
@@ -96,7 +106,7 @@ public final class Main {
           REPLCallable command = REPLCommands.get(arguments[0]);
           // calls run() on the command, which is the function that all REPLCallable objects
           // are guaranteed to have and that implements the functionality of the command
-          command.run(arguments, REPLCommands, data);
+          command.run(arguments, REPLCommands, traits, skills, tree, filter);
         } catch (ClassCastException e) {
           System.out.println("ERROR: invalid command type");
           //e.printStackTrace();

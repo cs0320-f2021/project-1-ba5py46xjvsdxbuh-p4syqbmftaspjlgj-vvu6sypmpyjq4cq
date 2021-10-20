@@ -1,3 +1,5 @@
+package orm;
+
 import java.util.Map;
 
 public class Interests {
@@ -5,7 +7,7 @@ public class Interests {
   private String interest;
 
   public Interests(Map<String, String> map) {
-    this.id = Integer.valueOf(map.get("id"));
+    this.id = Integer.parseInt(map.get("id"));
     this.interest = map.get("interest");
   }
 
@@ -15,4 +17,5 @@ public class Interests {
   public String getInterest() {
     return interest;
   }
+
 }

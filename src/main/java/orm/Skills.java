@@ -1,14 +1,17 @@
+package orm;
+
 import java.util.Map;
 
 public class Skills {
-  private Integer id;
+  private int id;
   private String name;
-  private Integer commenting;
-  private Integer testing;
-  private Integer OOP;
-  private Integer algorithms;
-  private Integer teamwork;
-  private Integer frontend;
+  private int commenting;
+  private int testing;
+  private int OOP;
+  private int algorithms;
+  private int teamwork;
+  private int frontend;
+  private int[] skills;
 
   public Skills(Map<String, String> map) {
     this.id = Integer.valueOf(map.get("id"));
@@ -19,30 +22,33 @@ public class Skills {
     this.algorithms = Integer.valueOf(map.get("algorithms"));
     this.teamwork = Integer.valueOf(map.get("teamwork"));
     this.frontend = Integer.valueOf(map.get("frontend"));
+    this.skills = new int[] {this.commenting, this.testing, this.OOP, this.algorithms, this.teamwork,
+        this.frontend};
   }
 
-  public Integer getID() {
+  public int getID() {
     return id;
   }
   public String getName() {
     return name;
   }
-  public Integer getCommenting() {
+  public int getCommenting() {
     return commenting;
   }
-  public Integer getTesting() {
+  public int getTesting() {
     return testing;
   }
-  public Integer getOOP() {
+  public int getOOP() {
     return OOP;
   }
-  public Integer getAlgorithms() {
+  public int getAlgorithms() {
     return algorithms;
   }
-  public Integer getTeamwork() {
+  public int getTeamwork() {
     return teamwork;
   }
-  public Integer getFrontend() {
+  public int getFrontend() {
     return frontend;
   }
+  public int[] getSkills() { return this.skills;}
 }

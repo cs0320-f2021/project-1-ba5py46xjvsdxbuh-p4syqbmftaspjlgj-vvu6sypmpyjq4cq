@@ -1,3 +1,5 @@
+package orm;
+
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.sql.Connection;
@@ -51,40 +53,40 @@ public class Database {
    * inserts a given object to the sql databse
    *
    * @param newData object to be inserted in SQLite3 database .
-   * @throws SQLException if an error occurs in any SQL query.
+   * @throws SQLException           if an error occurs in any SQL query.
    * @throws IllegalAccessException if the field of an object is called that doesn't exist.
    */
-  public void insert(Object newData) throws SQLException, IllegalAccessException {
-    try {
-      if (!objectList.contains(newData)) {
-        Class clas = newData.getClass();
-        Field[] fields = clas.getDeclaredFields();
-        PreparedStatement prep = conn.prepareStatement("INSERT INTO " +
-            "rent VALUES (?,?,?,?,?,?,?,?);");
-        for (int i = 0; i < fields.length; i++) {
-          prep.setString(i + 1, (String) fields[i].get(newData));
-        }
-        prep.addBatch();
-        prep.executeBatch();
-        prep.close();
-        objectList.add((Rent) newData);
-      } else {
-        System.out.println("Item is already in database!");
-      }
-    } catch (SQLException e) {
-      System.out.println("Item is already in database!");
-    } catch (IllegalAccessException e) {
-      System.out.println("Incorrect fields used.");
-    }
-  }
+//  public void insert(Object newData) throws SQLException, IllegalAccessException {
+//    try {
+//      if (!objectList.contains(newData)) {
+//        Class clas = newData.getClass();
+//        Field[] fields = clas.getDeclaredFields();
+//        PreparedStatement prep = conn.prepareStatement("INSERT INTO " +
+//            "rent VALUES (?,?,?,?,?,?,?,?);");
+//        for (int i = 0; i < fields.length; i++) {
+//          prep.setString(i + 1, (String) fields[i].get(newData));
+//        }
+//        prep.addBatch();
+//        prep.executeBatch();
+//        prep.close();
+//        objectList.add((Rent) newData);
+//      } else {
+//        System.out.println("Item is already in database!");
+//      }
+//    } catch (SQLException e) {
+//      System.out.println("Item is already in database!");
+//    } catch (IllegalAccessException e) {
+//      System.out.println("Incorrect fields used.");
+//    }
+//  }
 
   /**
    * deletes a given object to the sql databse
    *
    * @param data object to be deleted in SQLite3 database .
-   * @throws SQLException if an error occurs in any SQL query.
+   * @throws SQLException           if an error occurs in any SQL query.
    * @throws IllegalAccessException if the field of an object cannot be accessed
-   * @throws NoSuchFieldException if a field of an object is called that doesn't exist.
+   * @throws NoSuchFieldException   if a field of an object is called that doesn't exist.
    */
 
   public void delete(Object data)
@@ -106,7 +108,7 @@ public class Database {
     String tableName = c.getSimpleName().toLowerCase();
     if (queryParams.isEmpty()) {
       String sql = "SELECT * FROM " + tableName + ";";
-      return sqlListQuery(c,sql, Collections.emptyList());
+      return sqlListQuery(c, sql, Collections.emptyList());
     } else {
       List<Object> params = new ArrayList<>();
       Set<String> keys = queryParams.keySet();
@@ -120,7 +122,7 @@ public class Database {
         } else {
           wheres += (key + "=?");
         }
-    }
+      }
       String sql = "SELECT * FROM " + tableName + " WHERE " + wheres + ";";
       System.out.println(sql);
       return sqlListQuery(c, sql, params);
@@ -163,7 +165,7 @@ public class Database {
 
 
 /*  public void where(String table, String pred, String predEquals) throws SQLException {
-    List<Student> selectList = new ArrayList<>();
+    List<orm.Student> selectList = new ArrayList<>();
     PreparedStatement prep = conn.prepareStatement("SELECT * FROM " + table);
     //"SELECT * FROM rent WHERE" + pred + ";");
     //prep.setString(1, predEquals);
@@ -180,38 +182,24 @@ public class Database {
     }
   }*/
 
-  //prints a header with fields of rent
-  public static void printRentHeader() {
-    System.out.println(String.format("%10s %10s %10s %10s %10s %10s %10s %10s %10s %10s %10s %10s %10s %10s %10s %10s", "fit", "|", "user_id", "|", "item_id", "|", "rating", "|", "rented_for", "|", "category", "|", "size", "|", "id" , "|"));
-    System.out.println(String.format("%s", "-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------"));
-  }
 
-  //prints a rent object with its field values
-  public void printRent(Rent r) {
-    System.out.println(String.format("%10s %10s %10s %10s %10s %10s %10s %10s %10s %10s %10s %10s %10s %10s %10s %10s", r.fit, "|", r.user_id, "|", r.item_id, "|", r.rating, "|", r.rented_for, "|", r.category, "|", r.size, "|", r.id, "|"));
-  }
-
-  //helper function to make a new rent object. this can be modified to make any type of class object
-  public Rent makeNewRent(ResultSet rs) throws SQLException {
-    return new Rent(rs.getString(1), rs.getString(2), rs.getString(3), rs.getString(4),
-        rs.getString(5), rs.getString(6), rs.getString(7), rs.getString(8));
-  }
 
   /**
    * selects the data in a table where a given predicate is true. Returns a table
    * of the selected data
    *
-   * @param datum datum to be updated; we use the primary key from this object to update th necessary object
-   * @param field field thta we will be updating
+   * @param datum  datum to be updated; we use the primary key from this object to update th necessary object
+   * @param field  field thta we will be updating
    * @param newVal value of the field that we are updating
-   * @throws SQLException if an error occurs in any SQL query.
+   * @throws SQLException           if an error occurs in any SQL query.
    * @throws IllegalAccessException if the field of an object cannot be accessed
-   * @throws NoSuchFieldException if a field of an object is called that doesn't exist.
+   * @throws NoSuchFieldException   if a field of an object is called that doesn't exist.
    */
   public void update(Object datum, String field, String newVal)
       throws NoSuchFieldException, SQLException, IllegalAccessException {
     Class clas = datum.getClass();
-    Field fieldToUpdate = clas.getDeclaredField("id"); //gets simple name of field to update using the primary key
+    Field fieldToUpdate =
+        clas.getDeclaredField("id"); //gets simple name of field to update using the primary key
     String oldVal = fieldToUpdate.get(datum).toString();
     PreparedStatement prep = conn.prepareStatement("UPDATE rent SET "
         + field + " = '" +

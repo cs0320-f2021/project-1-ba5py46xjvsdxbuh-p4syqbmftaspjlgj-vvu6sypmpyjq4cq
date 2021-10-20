@@ -1,5 +1,10 @@
+package KDTree;
+
+import orm.Skills;
+
 import java.util.ArrayList;
 import java.util.LinkedList;
+import java.util.List;
 
 
 public class KDTree {
@@ -21,12 +26,13 @@ public class KDTree {
     this.dimensions = n;
   }
 
-//  public void loadData(List<T> data) {
-//    for (int i = 0; i < data.size(); i++) {
-//      data.get();
-//      this.
-//    }
-//  }
+  public void loadData(List<Skills> data) {
+    for (int i = 0; i < data.size(); i++) {
+      Skills entry = data.get(i);
+      Node insert = new Node(entry.getID(), entry.getSkills());
+      this.insertNode(insert);
+    }
+  }
 
   /* Insert node calls upon the insert method to put a new node into the tree. Additionally, the
   depth and size of the tree are updated. The order in which this happens changes based on whether
@@ -72,7 +78,7 @@ public class KDTree {
     } else {
       //If same node, throw error
       if (source.equals(insert)) {
-        throw new IllegalArgumentException("Node already exists in the tree");
+        throw new IllegalArgumentException("KDTree.Node already exists in the tree");
       }
       //default to right side if equal
       source.setRight(insert(source.getRight(), insert));

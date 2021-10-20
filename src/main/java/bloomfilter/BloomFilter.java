@@ -107,6 +107,9 @@ public class BloomFilter<E> implements Serializable {
     this.numberOfAddedElements = actualNumberOfFilterElements;
   }
 
+  public BloomFilter() {
+  }
+
   /**
    * Generates a digest based on the contents of a String.
    *

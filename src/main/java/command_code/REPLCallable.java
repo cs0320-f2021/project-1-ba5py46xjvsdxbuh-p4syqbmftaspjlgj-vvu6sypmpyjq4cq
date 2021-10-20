@@ -1,6 +1,12 @@
 package command_code;
+import KDTree.KDTree;
+import bloomfilter.BloomFilter;
+import bloomfilter.BloomFilterRecommender;
+import orm.*;
+import recommender.Item;
 
 import java.util.HashMap;
+import java.util.List;
 
 /**
  * This is the interface that commands which can be run from the REPL must implement
@@ -15,6 +21,7 @@ public interface REPLCallable {
   // implement their functionality that depends on access to the HashMap
   // of available REPL commands
   public void run(String[] REPLArguments, HashMap<String, REPLCallable> REPLCommands,
-                  List<Student> data);
+                  HashMap<String, Item> traits, List<Skills> skills, KDTree tree,
+                  BloomFilterRecommender<Item> filter);
 
 }

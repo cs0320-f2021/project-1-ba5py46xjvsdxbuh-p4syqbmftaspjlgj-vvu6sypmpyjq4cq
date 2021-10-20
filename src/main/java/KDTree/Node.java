@@ -1,4 +1,7 @@
+package KDTree;
+
 import java.util.Objects;
+
 public class Node implements Comparable<Node> {
   private int id;
   private final double[] point;
@@ -33,12 +36,12 @@ public class Node implements Comparable<Node> {
     this.id = id;
     // if this constructor was used but what it's being passed is not
     // a student whose derived skills we want (to store in k-d tree)
-    // then it should create the Node in the same way as the regular
+    // then it should create the KDTree.Node in the same way as the regular
     // "Most general constructor"
     if (!deriveSkills) {
       this.point = Node.intToDoubleArray(objects);
     } else {
-      // given that the Node is representing a student to be placed in the k-d tree
+      // given that the KDTree.Node is representing a student to be placed in the k-d tree
       // we have to transform it's skills (which is the objects param) so that our
       // algorithm finds students with complementary relative best skills as being near
       double[] derivedSkills = Node.skillConversion(objects);
@@ -49,7 +52,7 @@ public class Node implements Comparable<Node> {
   // This function takes in a students raw skills and then converts it into z-scores
   // of their additive inverse (mod 10) so that students are partnered up with others
   // that have relative confidence in skills opposite as them
-  private static double[] skillConversion(int[] objects) {
+  public static double[] skillConversion(int[] objects) {
     // make double-type defensive copy (shallow clone okay because int is primitive)
     double[] skills = intToDoubleArray(objects);
 
@@ -60,42 +63,42 @@ public class Node implements Comparable<Node> {
     // with partners good at the skills they're bad at
     for (int i = 0; i < skills.length; i++) {
       double scaled = skills[i] + Math.log(skills[i]);
-      skills[i] = 10-scaled;
+      skills[i] = 10 - scaled;
     }
 
     // convert numbers to z-score relative to the array
     double mean = 0;
-      double stdev = 0;
-      for (double num : skills) {
-        mean += num;
-      }
-      mean /= (1.0*skills.length);
-      for (double num : skills) {
-        stdev += Math.pow(num-mean, 2);
-      }
-      stdev = Math.sqrt(stdev/(1.0*skills.length));
-      double[] convertedSkills = new double[skills.length];
-      for (int i = 0; i < skills.length; i++) {
-        convertedSkills[i] = (skills[i]-mean)/stdev;
-      }
+    double stdev = 0;
+    for (double num : skills) {
+      mean += num;
+    }
+    mean /= (1.0 * skills.length);
+    for (double num : skills) {
+      stdev += Math.pow(num - mean, 2);
+    }
+    stdev = Math.sqrt(stdev / (1.0 * skills.length));
+    double[] convertedSkills = new double[skills.length];
+    for (int i = 0; i < skills.length; i++) {
+      convertedSkills[i] = (skills[i] - mean) / stdev;
+    }
 
-      // return the calculated array
-      return convertedSkills;
+    // return the calculated array
+    return convertedSkills;
   }
 
-  // Changes an integer array into a double array, added because Node originally
+  // Changes an integer array into a double array, added because KDTree.Node originally
   // handled integer arrays but our k-nearest algorithm relies on doubles due
   // to the incorporation of z-scores
   private static double[] intToDoubleArray(int[] objects) {
-      double[] newArray = new double[objects.length];
-      for (int i = 0; i < objects.length; i++) {
-          newArray[i] = (double)objects[i];
-      }
-      return newArray;
+    double[] newArray = new double[objects.length];
+    for (int i = 0; i < objects.length; i++) {
+      newArray[i] = (double) objects[i];
+    }
+    return newArray;
   }
 
 
-  //Setters and getters for Node instance variables
+  //Setters and getters for KDTree.Node instance variables
   public int getDepth() {
     return depth;
   }
@@ -136,12 +139,12 @@ public class Node implements Comparable<Node> {
     this.right = right;
   }
 
-  public double distanceTo(Node n){
+  public double distanceTo(Node n) {
     double sum = 0;
-    if (n.getPoint().length != this.getPoint().length){
+    if (n.getPoint().length != this.getPoint().length) {
       throw new IllegalArgumentException();
     }
-    for (int i  = 0; i < this.point.length; i++){
+    for (int i = 0; i < this.point.length; i++) {
       sum += Math.pow(this.point[i] - n.getPoint()[i], 2);
     }
     sum = Math.sqrt(sum);

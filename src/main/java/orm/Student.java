@@ -1,3 +1,5 @@
+package orm;
+
 public class Student {
   private int id;
   private String[] interests;
