@@ -21,6 +21,7 @@ public class RecsysGenGroups implements REPLCallable {
     for (int i = 0; i < tree.getSize(); i++) {
       idQueue.add(i + 1);
     }
+    System.out.println("hello");
     while (!idQueue.isEmpty()) {
       ArrayList<Node> treeRecs = tree.nearestNeighbors(Integer.parseInt(REPLArguments[1]),
           idQueue.get(0));
